@@ -26,17 +26,28 @@ namespace NotikaEmail_IDMastery.Controllers
         [HttpPost]
         public async Task<IActionResult> UserLogin(UserLoginViewModel model)
         {
-            var value = _context.Users.Where(x=> x.UserName == model.Username)
-                .FirstOrDefault();
-            if (value.EmailConfirmed == true)
+            var value = _context.Users.Where(x => x.UserName == model.Username).FirstOrDefault();
+
+            if (value == null)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, false, true);
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("Profile", "MyProfile");
-                }
+                ModelState.AddModelError(string.Empty, "Girdiğiniz kullanıcı adı sistemde bulunamadı.");
                 return View();
             }
+
+            if (value.EmailConfirmed)
+            {
+                var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, false, true);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("EditProfile", "Profile");
+                }
+
+                ModelState.AddModelError(string.Empty, "Kullanıcı adı veya şifre hatalı.");
+                return View();
+            }
+
+            ModelState.AddModelError(string.Empty, "Lütfen giriş yapmadan önce e-posta adresinizi doğrulayın.");
             return View();
         }
     }

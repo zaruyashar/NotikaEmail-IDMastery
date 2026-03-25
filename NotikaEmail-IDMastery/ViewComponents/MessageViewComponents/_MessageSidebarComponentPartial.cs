@@ -1,11 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using NotikaEmail_IDMastery.Context;
+using NotikaEmail_IDMastery.Entities;
 
 namespace NotikaEmail_IDMastery.ViewComponents.MessageViewComponents
 {
     public class _MessageSidebarComponentPartial : ViewComponent
     {
-        public IViewComponentResult Invoke()
+        private readonly EmailContext _context;
+        private readonly UserManager<AppUser> _userManager;
+
+        public _MessageSidebarComponentPartial(EmailContext context, UserManager<AppUser> userManager)
         {
+            _context = context;
+            _userManager = userManager;
+        }
+
+        public async Task <IViewComponentResult> InvokeAsync()
+        {
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            ViewBag.sendMessageCount = _context.Messages.Where(x => x.SenderEmail == user.Email).Count();
+            ViewBag.receiveMessageCount = _context.Messages.Where(x => x.ReceiverEmail == user.Email).Count();
             return View();
         }
     }

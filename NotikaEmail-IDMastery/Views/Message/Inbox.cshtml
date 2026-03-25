@@ -1,4 +1,4 @@
-﻿@model List<Message>
+﻿@model List<MessageWithSenderInfoViewModel>
 @{
     ViewData["Title"] = "Inbox";
     Layout = "~/Views/AdminLayout/Index.cshtml";
@@ -13,8 +13,8 @@
                 <div class="inbox-text-list sm-res-mg-t-30">
                     <div class="form-group">
                         <div class="nk-int-st search-input search-overt">
-                            <input type="text" class="form-control" placeholder="Search email..." />
-                            <button class="btn search-ib">Search</button>
+                            <input type="text" class="form-control" placeholder="Aranacak kelimeleri girin..." />
+                            <button class="btn search-ib">Ara</button>
                         </div>
                     </div>
                     <div class="inbox-btn-st-ls btn-toolbar">
@@ -33,16 +33,39 @@
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover table-inbox">
+
+                            <tr>
+                                <th>#</th>
+                                <th>Gönderen</th>
+                                <th>Konu</th>
+                                <th>Kategori</th>
+                                <th>Tarih</th>
+                            </tr>
+
                             <tbody>
                                 @foreach (var item in Model)
                                 {
                                     <tr>
-                                        <td class="">
-                                            <label><input type="checkbox" class="i-checks"></label>
-                                        </td>
-                                        <td><a href="#">Gönderen</a> <span class="label label-warning">@item.CategoryId</span></td>
-                                        <td><a href="#"><strong> Konu: @item.Subject</strong> @item.MessageDetails</a></td>
-                                        <td class="text-right mail-date">@item.SendDate.ToShortDateString()</td>
+                                        <td class=""><label><input type="checkbox" class="i-checks"></label></td>
+                                        <td><a href="/Message/MessageDetail/@item.MessageId/">@item.SenderName @item.SenderSurname</a></td>
+                                        <th><a href="/Message/MessageDetail/@item.MessageId/">@item.Subject</a></th>
+            
+                                        @{
+                                            string labelClass = item.CategoryName switch
+                                            {
+                                                "Eğitim" => "label-warning",
+                                                "Kampanyalar" => "label-info",
+                                                "Sosyal" => "label-success",
+                                                "Finans" => "label-primary",
+                                                "Seyahat" => "label-danger",
+                                                "Güncellemeler" => "label-default",
+                                                _ => "label-default"
+                                            };
+                                        }
+            
+                                        <td><span class="label @labelClass">@item.CategoryName</span></td>
+                                        
+                                        <td class="text-right mail-date">@item.SendDate.ToString("dd MMM yyyy")</td>
                                     </tr>
                                 }
                             </tbody>

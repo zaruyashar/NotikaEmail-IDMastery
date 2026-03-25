@@ -15,7 +15,13 @@ namespace NotikaEmail_IDMastery.Controllers
         [HttpGet]
         public IActionResult UserActivation()
         {
-            var email = TempData["MoveEmail"];
+            var email = TempData["MoveEmail"] as string;
+
+            if (string.IsNullOrEmpty(email))
+            {
+                return RedirectToAction("UserLogin", "Login");
+            }
+
             TempData["Test1"] = email;
             return View();
         }
@@ -23,19 +29,31 @@ namespace NotikaEmail_IDMastery.Controllers
         [HttpPost]
         public IActionResult UserActivation(int userCodeParameter)
         {
-            string email = TempData["Test1"].ToString();
-            var activationCode = _context.Users.Where(x=> x.Email == email)
-                .Select(y=> y.ActivationCode)
-                .FirstOrDefault();
+            var email = TempData["Test1"] as string;
 
-            if (userCodeParameter == activationCode)
+            if (string.IsNullOrEmpty(email))
             {
-                var value = _context.Users.Where(x => x.Email == email)
-                    .FirstOrDefault();
-                value.EmailConfirmed = true;
+                return RedirectToAction("UserLogin", "Login");
+            }
+
+            TempData.Keep("Test1");
+
+            var user = _context.Users.Where(x => x.Email == email).FirstOrDefault();
+
+            if (user == null)
+            {
+                return RedirectToAction("UserLogin", "Login");
+            }
+
+            if (userCodeParameter == user.ActivationCode)
+            {
+                user.EmailConfirmed = true;
                 _context.SaveChanges();
                 return RedirectToAction("UserLogin", "Login");
             }
+
+            ModelState.AddModelError(string.Empty, "Girdiğiniz aktivasyon kodu hatalı. Lütfen kontrol edip tekrar deneyin.");
+            
             return View();
         }
     }

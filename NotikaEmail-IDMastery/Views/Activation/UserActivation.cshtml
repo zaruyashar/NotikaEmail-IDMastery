@@ -35,21 +35,23 @@
     <div class="limiter">
         <div class="container-login100" style="background-image: url('/Login_v4/images/bg-01.jpg');">
             <div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
-                <form class="login100-form validate-form" method="post">
-					
+                <form class="login100-form validate-form" method="post" asp-action="UserActivation" asp-controller="Activation">
+    
                     <span class="login100-form-title p-b-49">
                         E-posta Doğrulama
                     </span>
 
+                    <div asp-validation-summary="All" class="text-danger m-b-23" style="font-weight: bold; text-align: center;"></div>
+
                     <div class="wrap-input100 validate-input m-b-23">
-                        <input class="input100" type="text" name="userCodeParameter" placeholder="Doğrulama kodunu girin">
+                        <input class="input100" type="number" name="userCodeParameter" placeholder="Doğrulama kodunu girin" required>
                         <span class="focus-input100"></span>
                     </div>
-					
+    
                     <div class="container-login100-form-btn">
                         <div class="wrap-login100-form-btn">
                             <div class="login100-form-bgbtn"></div>
-                            <button class="login100-form-btn">
+                            <button type="submit" class="login100-form-btn">
                                 Hesabı Doğrula
                             </button>
                         </div>

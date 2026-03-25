@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using MimeKit;
 using NotikaEmail_IDMastery.Entities;
 using NotikaEmail_IDMastery.Models;
@@ -10,10 +11,12 @@ namespace NotikaEmail_IDMastery.Controllers
     public class RegisterController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly IConfiguration _configuration;
 
-        public RegisterController(UserManager<AppUser> userManager)
+        public RegisterController(UserManager<AppUser> userManager, IConfiguration configuration)
         {
             _userManager = userManager;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -43,10 +46,14 @@ namespace NotikaEmail_IDMastery.Controllers
             {
                 // email codes here (app psw)
                 /* using 'google app passwords' is not the best method here for security reasons;
-                 * i'm only following up on course material for now */
+                 * i'm only following up on course material for now,
+                 * added IConfiguration for security */
+                string senderEmail = _configuration["EmailSettings:SenderEmail"];
+                string senderPassword = _configuration["EmailSettings:AppPassword"];
+
                 MimeMessage mimeMessage = new MimeMessage();
-                MailboxAddress mailboxAddressFrom = new MailboxAddress("Admin","burner email address");
-                
+                MailboxAddress mailboxAddressFrom = new MailboxAddress("Admin", senderEmail);
+
                 mimeMessage.From.Add(mailboxAddressFrom);
 
                 MailboxAddress mailboxAddressTo = new MailboxAddress("User", model.Email);
@@ -59,11 +66,12 @@ namespace NotikaEmail_IDMastery.Controllers
 
                 SmtpClient client = new SmtpClient();
                 client.Connect("smtp.gmail.com", 587, false);
-                client.Authenticate("burner email address", "app psw here");
+
+                client.Authenticate(senderEmail, senderPassword);
                 client.Send(mimeMessage);
                 client.Disconnect(true);
 
-
+                TempData["MoveEmail"] = model.Email;
                 return RedirectToAction("UserActivation", "Activation");
             }
             else
@@ -73,7 +81,7 @@ namespace NotikaEmail_IDMastery.Controllers
                 for a production environment */
                 foreach (var item in result.Errors)
                 {
-                    ModelState.AddModelError("", item.Description);
+                    ModelState.AddModelError(string.Empty, item.Description);
                 }
             }
             return View();
