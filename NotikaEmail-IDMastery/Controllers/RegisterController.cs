@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 using NotikaEmail_IDMastery.Entities;
-using NotikaEmail_IDMastery.Models;
 using MailKit.Net.Smtp;
+using NotikaEmail_IDMastery.Models.IdentityModels;
 
 namespace NotikaEmail_IDMastery.Controllers
 {

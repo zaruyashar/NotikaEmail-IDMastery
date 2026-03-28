@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using NotikaEmail_IDMastery.Entities;
-using NotikaEmail_IDMastery.Models;
+using NotikaEmail_IDMastery.Models.IdentityModels;
 
 namespace NotikaEmail_IDMastery.Controllers
 {
+    [Authorize]
     public class ProfileController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -18,7 +20,18 @@ namespace NotikaEmail_IDMastery.Controllers
         [HttpGet]
         public async Task <IActionResult> EditProfile()
         {
+            if (User.Identity == null || string.IsNullOrEmpty(User.Identity.Name))
+            {
+                return RedirectToAction("UserLogin", "Login");
+            }
+
             var values = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            if (values == null)
+            {
+                return RedirectToAction("UserLogin", "Login");
+            }
+
             UserEditViewModel userEditViewModel = new UserEditViewModel();
             userEditViewModel.Name = values.Name;
             userEditViewModel.Surname = values.Surname;
@@ -37,15 +50,19 @@ namespace NotikaEmail_IDMastery.Controllers
             if (model.Password == model.PasswordConfirm)
             {
                 var user = await _userManager.FindByNameAsync(User.Identity.Name);
-                user.Name = model.Name;
-                user.Surname = model.Surname;
-                user.PhoneNumber = model.PhoneNumber;
-                user.City = model.City;
-                user.UserName = model.UserName;
-                user.Email = model.Email;
-                user.ImageUrl = model.ImageUrl;
-                user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.Password);
-                var result = await _userManager.UpdateAsync(user);
+
+                if (user != null)
+                {
+                    user.Name = model.Name;
+                    user.Surname = model.Surname;
+                    user.PhoneNumber = model.PhoneNumber;
+                    user.City = model.City;
+                    user.UserName = model.UserName;
+                    user.Email = model.Email;
+                    user.ImageUrl = model.ImageUrl;
+                    user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.Password);
+                    var result = await _userManager.UpdateAsync(user);
+                }
             }
             return View();
         }

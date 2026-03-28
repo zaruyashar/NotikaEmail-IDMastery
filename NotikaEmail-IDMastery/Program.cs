@@ -1,7 +1,11 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using NotikaEmail_IDMastery.Context;
 using NotikaEmail_IDMastery.Entities;
-using NotikaEmail_IDMastery.Models;
+using NotikaEmail_IDMastery.Models.IdentityModels;
+using NotikaEmail_IDMastery.Models.JWTModels;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,9 +15,37 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
         .AddEntityFrameworkStores<EmailContext>()
         .AddErrorDescriber<CustomIdentityValidator>();
 
+
+builder.Services.Configure<JwtSettingsModel>(builder.Configuration.GetSection("JwtSettings"));
+
+
+builder.Services.AddAuthentication()
+    .AddJwtBearer(opt =>
+    {
+        var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettingsModel>();
+
+        if (string.IsNullOrEmpty(jwtSettings?.Key))
+        {
+            throw new InvalidOperationException("JWT Secret Key bulunamadı. Lütfen appsettings veya User Secrets yapılandırmasını kontrol edin.");
+        }
+
+        opt.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings.Issuer,
+            ValidAudience = jwtSettings.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
+        };
+    });
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
 
 // Configure the HTTP request pipeline.
@@ -27,6 +59,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
@@ -35,6 +68,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();

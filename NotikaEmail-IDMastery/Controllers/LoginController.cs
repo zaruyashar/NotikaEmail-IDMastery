@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NotikaEmail_IDMastery.Context;
 using NotikaEmail_IDMastery.Entities;
-using NotikaEmail_IDMastery.Models;
+using NotikaEmail_IDMastery.Models.IdentityModels;
 
 namespace NotikaEmail_IDMastery.Controllers
 {

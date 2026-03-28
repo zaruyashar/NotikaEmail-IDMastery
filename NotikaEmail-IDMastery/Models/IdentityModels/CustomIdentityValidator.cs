@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace NotikaEmail_IDMastery.Models
+namespace NotikaEmail_IDMastery.Models.IdentityModels
 {
     public class CustomIdentityValidator : IdentityErrorDescriber
     {

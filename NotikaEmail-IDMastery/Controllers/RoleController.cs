@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NotikaEmail_IDMastery.Entities;
-using NotikaEmail_IDMastery.Models;
+using NotikaEmail_IDMastery.Models.IdentityModels;
 
 namespace NotikaEmail_IDMastery.Controllers
 {
+    [Authorize]
     public class RoleController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;

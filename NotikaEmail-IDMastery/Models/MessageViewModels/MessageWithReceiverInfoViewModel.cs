@@ -1,4 +1,4 @@
-﻿namespace NotikaEmail_IDMastery.Models
+﻿namespace NotikaEmail_IDMastery.Models.MessageViewModels
 {
     public class MessageWithReceiverInfoViewModel
     {
