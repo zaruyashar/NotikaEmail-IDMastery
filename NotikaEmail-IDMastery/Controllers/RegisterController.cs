@@ -66,7 +66,6 @@ namespace NotikaEmail_IDMastery.Controllers
 
                 SmtpClient client = new SmtpClient();
                 client.Connect("smtp.gmail.com", 587, false);
-
                 client.Authenticate(senderEmail, senderPassword);
                 client.Send(mimeMessage);
                 client.Disconnect(true);

@@ -13,5 +13,6 @@ namespace NotikaEmail_IDMastery.Context
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
     }
 }

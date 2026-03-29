@@ -31,7 +31,13 @@ namespace NotikaEmail_IDMastery.Controllers
             if (value == null)
             {
                 ModelState.AddModelError(string.Empty, "Girdiğiniz kullanıcı adı sistemde bulunamadı.");
-                return View();
+                return View(model);
+            }
+
+            if (!value.EmailConfirmed)
+            {
+                ModelState.AddModelError(string.Empty, "E-pota adresinizi henüz onaylamamışsınız.");
+                return View(model);
             }
 
             if (value.EmailConfirmed)
