@@ -22,6 +22,7 @@ namespace NotikaEmail_IDMastery.ViewComponents
             var userEmail = userValue.Email;
             var userEmailCount = _context.Messages.Where(x => x.ReceiverEmail == userEmail).Count();
             ViewBag.userEmailCount = userEmailCount;
+            ViewBag.notificationCount = _context.Notifications.Count();
             return View();
         }
     }

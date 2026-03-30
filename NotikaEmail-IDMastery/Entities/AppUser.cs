@@ -9,5 +9,6 @@ namespace NotikaEmail_IDMastery.Entities
         public string? ImageUrl { get; set; }
         public string? City { get; set; }
         public int? ActivationCode { get; set; }
+        public List<Comment> Comment { get; set; }
     }
 }

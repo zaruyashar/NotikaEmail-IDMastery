@@ -126,5 +126,44 @@ namespace NotikaEmail_IDMastery.Controllers
             _context.SaveChanges();
             return RedirectToAction("Sendbox");
         }
+
+        public async Task<IActionResult> GetMessageListByCategory(int id)
+        {
+            if (string.IsNullOrEmpty(User.Identity?.Name))
+            {
+                return RedirectToAction("UserLogin", "Login");
+            }
+
+            AppUser user = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            if (user == null)
+            {
+                return RedirectToAction("UserLogin", "Login");
+            }
+
+            var values = (from m in _context.Messages
+                          join u in _context.Users
+                          on m.SenderEmail equals u.Email into userGroup
+                          from sender in userGroup.DefaultIfEmpty()
+
+                          join c in _context.Categories
+                          on m.CategoryId equals c.CategoryId into categoryGroup
+                          from category in categoryGroup.DefaultIfEmpty()
+
+                          where m.ReceiverEmail == user.Email && m.CategoryId == id
+                          select new MessageWithSenderInfoViewModel
+                          {
+                              MessageId = m.MessageId,
+                              MessageDetail = m.MessageDetails,
+                              Subject = m.Subject,
+                              SendDate = m.SendDate,
+                              SenderEmail = m.SenderEmail,
+                              SenderName = sender != null ? sender.Name : "Bilinmeyen",
+                              SenderSurname = sender != null ? sender.Surname : "Kullanıcı",
+                              CategoryName = category != null ? category.CategoryName : "Kategori Yok"
+                          }).ToList();
+
+            return View(values);
+        }
     }
 }

@@ -2,31 +2,31 @@
 (CommentDetail, CommentDate, CommentStatus, AppUserId) 
 VALUES
 -- Yapay Zeka üzerine bir yorum
-('ChatGPT gibi modeller sayesinde içerik üretimi ciddi anlamda hız kazandı.', GETDATE(), N'Yorum onaylandı', '045f941b-89e7-4628-ab93-c7db27ca2737'),
+('ChatGPT gibi modeller sayesinde içerik üretimi ciddi anlamda hız kazandı.', GETDATE(), N'Yorum onaylandı', '16dcc923-e5f3-450c-ab2e-beeb97e3cad7'),
 
 -- Teknoloji hakkında eleştirel bir yorum
-(N'Yeni çıkan iPhone modeli sadece tasarım değişikliğiyle geldi, yenilik yok denecek kadar az.', GETDATE(), N'Yorum onaylandı', '17d8979e-d2d7-41be-ba75-727852b39848'),
+(N'Yeni çıkan iPhone modeli sadece tasarım değişikliğiyle geldi, yenilik yok denecek kadar az.', GETDATE(), N'Yorum onaylandı', '1a87a244-1e6a-466e-9867-ceb9891fdff7'),
 
 -- Spor üzerine motive edici bir yorum
-(N'Milli takım bu sene inanılmaz bir performans sergiliyor, gurur verici!', GETDATE(), N'Yorum onaylandı', '1cc950b0-acd5-4c78-a12f-4d984bd0798e'),
+(N'Milli takım bu sene inanılmaz bir performans sergiliyor, gurur verici!', GETDATE(), N'Yorum onaylandı', '3e5e81dc-4950-455b-8b8b-2864283d96b1'),
 
 -- Güvenlik konulu bilgilendirici yorum
-(N'2FA kullanmayan sistemler artık büyük risk altında, kullanıcıların güvenliği için şart.', GETDATE(), N'Yorum onaylandı', '2d4fffe2-a6f3-4299-bef6-595a14e485d6'),
+(N'2FA kullanmayan sistemler artık büyük risk altında, kullanıcıların güvenliği için şart.', GETDATE(), N'Yorum onaylandı', '499f1bd1-88b8-43ae-bf2a-576c5c417a4b'),
 
 -- Tartışmalı/toksik bir yorum
-(N'Bu yazılım ekibi resmen iş bilmez, kaç haftadır aynı hatayı çözemiyorlar!', GETDATE(), N'Toksik yorum', '3ee3a60c-60d7-457f-8b8c-656ad60c5787'),
+(N'Bu yazılım ekibi resmen iş bilmez, kaç haftadır aynı hatayı çözemiyorlar!', GETDATE(), N'Toksik yorum', '575d1cd9-ea12-4dfd-9ee1-f398f843bdff'),
 
 -- Silinmiş yorum
-(N'Bu yorum kuralları ihlal ettiği için silinmiştir.', GETDATE(), N'Yorum silindi', '3f784b82-c336-4201-bd2e-f5a3febc33d1'),
+(N'Bu yorum kuralları ihlal ettiği için silinmiştir.', GETDATE(), N'Yorum silindi', '66aebfb8-43d8-4ad1-aee0-1f47b4ffe7d9'),
 
 -- Yapay zeka geleceği hakkında fikir
-(N'Yapay zeka yakında sadece işlerimizi değil, kararlarımızı da etkilemeye başlayacak gibi.', GETDATE(), N'Yorum onaylandı', '1cc950b0-acd5-4c78-a12f-4d984bd0798e'),
+(N'Yapay zeka yakında sadece işlerimizi değil, kararlarımızı da etkilemeye başlayacak gibi.', GETDATE(), N'Yorum onaylandı', '8a365214-cf4b-40a3-8234-fe16a22034dd'),
 
 -- Kripto teknolojisi hakkında yorum
-(N'Blockchain teknolojisi sadece kripto değil, tedarik zinciri takibi gibi alanlarda da çok güçlü.', GETDATE(), N'Yorum onaylandı', '2d4fffe2-a6f3-4299-bef6-595a14e485d6'),
+(N'Blockchain teknolojisi sadece kripto değil, tedarik zinciri takibi gibi alanlarda da çok güçlü.', GETDATE(), N'Yorum onaylandı', '9917c7b7-20b0-46f4-91e9-185bfa62bf60'),
 
 -- Sporda yapay zeka kullanımı
-(N'Veri analitiği ile futbol maçlarında oyuncu performansları daha iyi analiz ediliyor.', GETDATE(), N'Yorum onaylandı', '17d8979e-d2d7-41be-ba75-727852b39848'),
+(N'Veri analitiği ile futbol maçlarında oyuncu performansları daha iyi analiz ediliyor.', GETDATE(), N'Yorum onaylandı', '9b849be5-c11d-48d5-970a-404d0ba2eeaa'),
 
 -- Bilgi güvenliği hakkında teknik bir yorum
-(N'Veritabanı şifreleme ve token bazlı erişim kontrolü artık her uygulamada standart olmalı.', GETDATE(), N'Yorum onaylandı', '045f941b-89e7-4628-ab93-c7db27ca2737');
+(N'Veritabanı şifreleme ve token bazlı erişim kontrolü artık her uygulamada standart olmalı.', GETDATE(), N'Yorum onaylandı', '9d6bb201-33f3-4553-b0eb-34ca47b0687f');
