@@ -25,7 +25,7 @@ namespace NotikaEmail_IDMastery.Controllers
                 return RedirectToAction("UserLogin", "Login");
             }
 
-            AppUser user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
 
             if (user == null)
             {
@@ -64,7 +64,7 @@ namespace NotikaEmail_IDMastery.Controllers
                 return RedirectToAction("UserLogin", "Login");
             }
 
-            AppUser user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
 
             if (user == null)
             {
