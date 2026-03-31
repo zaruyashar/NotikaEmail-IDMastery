@@ -5,6 +5,7 @@ using NotikaEmail_IDMastery.Context;
 using NotikaEmail_IDMastery.Entities;
 using System.Text.Json;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NotikaEmail_IDMastery.Controllers
 {
@@ -27,6 +28,7 @@ namespace NotikaEmail_IDMastery.Controllers
             return View(values);
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult UserCommentList()
         {
             var values = _context.Comments.Include(x => x.AppUser).ToList();
@@ -66,19 +68,42 @@ namespace NotikaEmail_IDMastery.Controllers
                 }
 
                 client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
-                var requestBody = new { inputs = comment.CommentDetail };
-                var json = JsonSerializer.Serialize(requestBody);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var response = await client.PostAsync("https://router.huggingface.co/hf-inference/models/unitary/toxic-bert", content);
-                var responseString = await response.Content.ReadAsStringAsync();
 
-                if (response.IsSuccessStatusCode)
+                var translateRequestBody = new
                 {
-                    var doc = JsonDocument.Parse(responseString);
+                    inputs = comment.CommentDetail
+                };
+                var translateJson = JsonSerializer.Serialize(translateRequestBody);
+                var translateContent = new StringContent(translateJson, Encoding.UTF8, "application/json");
+
+                var translateResponse = await client.PostAsync("https://router.huggingface.co/hf-inference/models/Helsinki-NLP/opus-mt-tr-en", translateContent);
+                var translateResponseString = await translateResponse.Content.ReadAsStringAsync();
+
+                string englishText = comment.CommentDetail;
+                if (translateResponse.IsSuccessStatusCode && translateResponseString.TrimStart().StartsWith("["))
+                {
+                    var translateDoc = JsonDocument.Parse(translateResponseString);
+                    englishText = translateDoc.RootElement[0].GetProperty("translation_text").GetString();
+                }
+
+                var toxicRequestBody = new
+                {
+                    inputs = englishText
+                };
+
+
+                var toxicJson = JsonSerializer.Serialize(toxicRequestBody);
+                var toxicContent = new StringContent(toxicJson, Encoding.UTF8, "application/json");
+                var toxicResponse = await client.PostAsync("https://router.huggingface.co/hf-inference/models/unitary/toxic-bert", toxicContent);
+                var toxicResponseString = await toxicResponse.Content.ReadAsStringAsync();
+
+                if (toxicResponseString.TrimStart().StartsWith("["))
+                {
+                    var toxicDoc = JsonDocument.Parse(toxicResponseString);
                     bool isToxic = false;
 
-                    foreach (var item in doc.RootElement[0].EnumerateArray())
+                    foreach (var item in toxicDoc.RootElement[0].EnumerateArray())
                     {
                         string label = item.GetProperty("label").GetString();
                         double score = item.GetProperty("score").GetDouble();
@@ -106,6 +131,38 @@ namespace NotikaEmail_IDMastery.Controllers
             }
 
             _context.Comments.Add(comment);
+            _context.SaveChanges();
+            return RedirectToAction("UserCommentList");
+        }
+
+        public IActionResult DeleteComment(int id)
+        {
+            var value = _context.Comments.Find(id);
+            _context.Comments.Remove(value);
+            _context.SaveChanges();
+            return RedirectToAction("UserCommentList");
+        }
+
+        public IActionResult CommentStatusChangeToToxic(int id)
+        {
+            var value = _context.Comments.Find(id);
+            value.CommentStatus = "Toksik Yorum";
+            _context.SaveChanges();
+            return RedirectToAction("UserCommentList");
+        }
+
+        public IActionResult CommentStatusChangeToPassive(int id)
+        {
+            var value = _context.Comments.Find(id);
+            value.CommentStatus = "Yorum Kaldırıldı";
+            _context.SaveChanges();
+            return RedirectToAction("UserCommentList");
+        }
+
+        public IActionResult CommentStatusChangeToActive(int id)
+        {
+            var value = _context.Comments.Find(id);
+            value.CommentStatus = "Yorum Onaylandı";
             _context.SaveChanges();
             return RedirectToAction("UserCommentList");
         }
