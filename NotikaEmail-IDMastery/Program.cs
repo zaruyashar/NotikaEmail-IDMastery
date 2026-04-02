@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
@@ -41,7 +42,25 @@ builder.Services.AddAuthentication()
             ValidAudience = jwtSettings.Audience,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
         };
+    })
+    // Google Authentication Config:
+    .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+    {
+        var googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
+
+        var clientId = googleAuthNSection["ClientId"];
+        var clientSecret = googleAuthNSection["ClientSecret"];
+
+        if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret))
+        {
+            throw new InvalidOperationException("Google ClientId veya ClientSecret yapılandırması eksik.");
+        }
+
+        options.ClientId = clientId;
+        options.ClientSecret = clientSecret;
+        options.CallbackPath = "/signin-google"; // this is already the default - just added for clarity.
     });
+
 
 builder.Services.AddControllersWithViews();
 
