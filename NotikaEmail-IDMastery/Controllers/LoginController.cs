@@ -1,9 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.CookiePolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using NotikaEmail_IDMastery.Context;
 using NotikaEmail_IDMastery.Entities;
 using NotikaEmail_IDMastery.Models.IdentityModels;
+using NotikaEmail_IDMastery.Models.JWTModels;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 
 namespace NotikaEmail_IDMastery.Controllers
 {
@@ -12,12 +18,14 @@ namespace NotikaEmail_IDMastery.Controllers
         private readonly SignInManager<AppUser> _signInManager;
         private readonly EmailContext _context;
         private readonly UserManager<AppUser> _userManager;
+        private readonly JwtSettingsModel _jwtSettingsModel;
 
-        public LoginController(SignInManager<AppUser> signInManager, EmailContext context, UserManager<AppUser> userManager)
+        public LoginController(SignInManager<AppUser> signInManager, EmailContext context, UserManager<AppUser> userManager, IOptions<JwtSettingsModel> jwtSettingsModel)
         {
             _signInManager = signInManager;
             _context = context;
             _userManager = userManager;
+            _jwtSettingsModel = jwtSettingsModel.Value;
         }
 
         [HttpGet]
@@ -37,6 +45,16 @@ namespace NotikaEmail_IDMastery.Controllers
                 return View(model);
             }
 
+            SimpleUserViewModel simpleUserViewModel = new SimpleUserViewModel()
+            {
+                City = value.City,
+                Email = value.Email,
+                Id = value.Id,
+                Name = value.Name,
+                Surname = value.Surname,
+                Username = value.UserName
+            };
+
             if (!value.EmailConfirmed)
             {
                 ModelState.AddModelError(string.Empty, "E-pota adresinizi henüz onaylamamışsınız.");
@@ -55,16 +73,52 @@ namespace NotikaEmail_IDMastery.Controllers
 
                 if (result.Succeeded)
                 {
+                    var token = GenerateJwtToken(simpleUserViewModel);
+                    Response.Cookies.Append("jwtToken", token, new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = DateTime.UtcNow.AddMinutes(_jwtSettingsModel.ExpireMinutes)
+                    });
                     return RedirectToAction("EditProfile", "Profile");
                 }
 
                 ModelState.AddModelError(string.Empty, "Kullanıcı adı veya şifre hatalı.");
-                return View();
+                return View(model);
             }
 
             ModelState.AddModelError(string.Empty, "Lütfen giriş yapmadan önce e-posta adresinizi doğrulayın.");
             return View();
         }
+
+
+        public string GenerateJwtToken(SimpleUserViewModel simpleUserViewModel)
+        {
+            var claim = new[]
+            {
+                new Claim("name", simpleUserViewModel.Name ?? ""),
+                new Claim("surname", simpleUserViewModel.Surname ?? ""),
+                new Claim("city", simpleUserViewModel.City ?? ""),
+                new Claim("username", simpleUserViewModel.Username ?? ""),
+                new Claim(ClaimTypes.NameIdentifier, simpleUserViewModel.Id ?? ""),
+                new Claim(ClaimTypes.Email, simpleUserViewModel.Email ?? ""),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettingsModel.Key));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _jwtSettingsModel.Issuer,
+                audience: _jwtSettingsModel.Audience,
+                claims: claim,
+                expires: DateTime.UtcNow.AddMinutes(_jwtSettingsModel.ExpireMinutes),
+                signingCredentials: creds);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
 
         [HttpGet]
         public IActionResult LoginWithGoogle()

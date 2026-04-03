@@ -32,7 +32,16 @@
                                     <td>@item.Name @item.Surname</td>
                                     <td>@item.UserName</td>
                                     <td>@item.Email</td>
-                                    <td>@item.IsActive</td>
+                                    <td>
+                                        @if (item.IsActive)
+                                        {
+                                            <a href="/User/DeactivateUserCount/@item.Id" class="btn btn-warning">Pasif Yap</a>
+                                        }
+                                        else
+                                        {
+                                            <a href="/User/ActivateUserCount/@item.Id" class="btn btn-success">Aktif Yap</a>
+                                        }
+                                    </td>
                                 </tr>
                             }
                         </table>
