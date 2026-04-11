@@ -48,7 +48,7 @@ Here is a look at the core functionalities implemented during the course:
 <details>
 <summary>Click to view Toxic Comment Analysis & Inbox</summary>
 
-![Comment Analysis]<img width="3071" height="1917" alt="hugging face" src="https://github.com/user-attachments/assets/ae149414-63db-4b9d-a48a-b9dbcbaa16df" />
+![Comment Analysis]![4  hugging face](https://github.com/user-attachments/assets/5efdfb49-e6a7-4fcc-bbf5-dd3b089ebaa8)
 *Real-time Turkish/English toxic comment detection using Hugging Face.*
 
 ![Messaging System]<img width="3071" height="1919" alt="inbox" src="https://github.com/user-attachments/assets/110278c9-3fb7-4d55-965e-ef3a40f07e93" />
