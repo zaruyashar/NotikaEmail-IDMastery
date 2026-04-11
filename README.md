@@ -1,6 +1,8 @@
 # 🛡️ ASP.NET Core Identity & Security Masterclass (Course Project)
 
-> **Project Status: Archived / Educational Artifact** > This repository contains the source code from a comprehensive ASP.NET Core 10.0 course focused on backend security, identity management, and architecture. While I am aware that the user interface and overall frontend design require significant improvements, I have decided to archive this project "as-is" from the course curriculum. 
+> **Project Status: Archived / Educational Artifact**
+>
+> This repository contains the source code from a comprehensive ASP.NET Core 10.0 course focused on backend security, identity management, and architecture. While I am aware that the user interface and overall frontend design require significant improvements, I have decided to archive this project "as-is" from the course curriculum. 
  
 > My primary objective in this phase of my development journey was to deeply understand the underlying backend mechanics—specifically authentication, authorization, token management, and API integrations—rather than polishing the UI. Therefore, this repository serves as a backend learning milestone and will not receive further frontend updates.
 
@@ -10,7 +12,7 @@ Despite the unfinished frontend template, this project served as a heavy-lifting
 
 * **Advanced Identity & Access Management:** Full implementation of ASP.NET Core Identity, including custom `AppUser` configurations, RoleManager, and UserManager.
 * **Dual Authentication Systems:** Configured and managed both **JWT (JSON Web Tokens)** for secure API access and **Cookie Authentication** running in parallel within the same architecture.
-* **Account Security & Recovery:** * Real-time Email Verification with activation codes via SMTP.
+* **Account Security & Recovery:** Real-time Email Verification with activation codes via SMTP.
   * Secure, token-based "Forgot Password" link generation and password reset flows.
 * **AI-Powered Moderation:** Integrated the **Hugging Face API** to perform automated Toxic Comment Analysis for both English and Turkish inputs.
 * **Authorization Policies:** Implemented deep Role-based, Claims-based, and Policy-based authorization rules.
